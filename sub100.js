@@ -13,7 +13,7 @@ if (process.argv.length < 3) {
 const filename = process.argv[2];
 
 const csvFile = fs.createWriteStream('./imoveis.csv');
-csvFile.write('Edifício,Endereço,Bairro,Tamanho,Quartos,Valor,Condomínio,Total,IPTU,Mobiliada,Garagem,Distância Mandic,Link' + "\n");
+csvFile.write('Edifício,Endereço,Bairro,Tamanho,Quartos,Valor,Condomínio,Total,IPTU,Mobiliada,Garagem,Distância do trabalho,Link' + "\n");
 
 const liner = new readlines(filename);
 
@@ -107,6 +107,12 @@ function getFileInfo(html, url) {
     info.endereco = $('.ficha_dadosprincipais_informacoes_maior', html).eq(1).find('span').text().trim();
     info.bairro = $('.ficha_dadosprincipais_informacoes_medio', html).eq(0).find('span').text().trim();
 
+    const descricaoGeral = $('.ficha_dadosprincipais', html).text();
+    const matchTamanho = descricaoGeral.match(/.rea (?:privativa|.til): (.*?) m²/);
+    if (matchTamanho) {
+        info.tamanho = matchTamanho[1] + 'm²';
+    }
+
     const fichaComodos = $('.ficha_comodos', html).text();
     const matchDormitorios = fichaComodos.match(/(\d+) dormit.rio/);
     if (matchDormitorios) {
@@ -118,7 +124,8 @@ function getFileInfo(html, url) {
     const informacoesComplementares = $('.ficha_detalhes', html).eq(1).text();
     const matchGaragem = informacoesComplementares.match(/Garagen\(s\) (coberta|descoberta)\(s\): (.*)/);
     if (matchGaragem) {
-        info.garagem = matchGaragem[1] + `(${matchGaragem[2]})`;
+        const textoGaragem = matchGaragem[1];
+        info.garagem = `${textoGaragem.charAt(0).toUpperCase()}${textoGaragem.slice(1)} (${matchGaragem[2]})`;
     }
 
     info.mobiliada = '???';
