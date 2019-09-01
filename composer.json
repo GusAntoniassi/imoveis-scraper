@@ -1,0 +1,10 @@
+{
+    "name": "gus/catalogue-alugueis",
+    "authors": [
+        {
+            "name": "GusAntoniassi",
+            "email": "gus.antoniassi@gmail.com"
+        }
+    ],
+    "require": {}
+}
