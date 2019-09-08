@@ -17,12 +17,17 @@ csvFile.write('Edifício,Endereço,Bairro,Tamanho,Quartos,Valor,Condomínio,Tota
 
 const liner = new readlines(filename);
 
+/**
+ * Método principal, declarado como função assíncrona
+ * pra poder usar os awaits
+ */
 (async function() {
     let line;
     while (line = liner.next()) {
         const url = line.toString();
 
         if (!url) {
+	    csvFile.close();
             return;
         }
 
@@ -33,12 +38,14 @@ const liner = new readlines(filename);
             html = await getHtml(url);
         } catch (e) {
             console.error('Erro ao obter o HTML da página', e);
+            return;
         }
 
-        const info = getFileInfo(html, url);
+        const info = getInfo(html, url);
 
         if (!info) {
-            console.error('Erro ao pegar as informações do arquivo!');
+            console.error('Erro ao pegar as informações do HTML!');
+	    csvFile.close();
             return;
         }
 
@@ -46,17 +53,23 @@ const liner = new readlines(filename);
             await writeToCsv(info);
         } catch (e) {
             console.error('Erro ao gravar no CSV', e);
+	    csvFile.close();
+	    return;
         }
     }
 
     csvFile.close();
 })();
 
+/**
+ * Faz uma requisição GET a uma determinada URL
+ * e retorna seu conteúdo (HTML)
+ */
 async function getHtml(url) {
     return fetch(url, {
         method: 'get',
-        headers: { 
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+        headers: {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng;q=0.8,application/signed-exchange;v=b3',
             'Accept-Encoding': 'gzip, deflate',
             'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
             'Cache-Control': 'max-age=0',
@@ -71,7 +84,10 @@ async function getHtml(url) {
     .then(arrayBuffer => iconv.convert(Buffer.from(arrayBuffer), 'utf-8').toString())
 }
 
-function getFileInfo(html, url) {
+/**
+ * Extrai as informações do HTML utilizando o Cheerio
+ */
+function getInfo(html, url) {
     const info = {
         edificio: '???',
         endereco: '???',
@@ -82,20 +98,22 @@ function getFileInfo(html, url) {
         condominio: '???',
         total: '',
         iptu: '',
-        mobiliada: '???',
+        mobiliada: '???', // Não é preenchido automaticamente, melhor descobrir pelas fotos
         garagem: '???',
-        distanciaMandic: '',
+        distanciaTrabalho: '', // @TODO: Integração com a API do Google Maps pra pegar a distância? :P
         link: url,
         observacoes: ''
     };
 
+    // Valor do aluguel
     info.valor = $('.ficha_dadosprincipais_titulo .texto_cinza16', html).text().replace('R$ ', '');
 
+    // Valor do condomínio e do IPTU
     const condominioIptu = $('.ficha_dadosprincipais_titulo .texto_cinza11', html).text();
     const matchIptu = condominioIptu.match(/IPTU: R\$ ([0-9,]+)/);
 
     if (matchIptu) {
-        info.iptu = matchIptu[1].trim();    
+        info.iptu = matchIptu[1].trim();
     }
 
     const matchCondominio = condominioIptu.match(/condom.nio: R\$ ([0-9,]+)/);
@@ -103,32 +121,35 @@ function getFileInfo(html, url) {
         info.condominio = matchCondominio[1].trim();
     }
 
+    // Informações sobre o edifício e localização
     info.edificio = $('.ficha_dadosprincipais_informacoes_maior', html).eq(0).find('span').text().trim();
     info.endereco = $('.ficha_dadosprincipais_informacoes_maior', html).eq(1).find('span').text().trim();
     info.bairro = $('.ficha_dadosprincipais_informacoes_medio', html).eq(0).find('span').text().trim();
 
+    // Tamanho da área privativa / útil
     const descricaoGeral = $('.ficha_dadosprincipais', html).text();
     const matchTamanho = descricaoGeral.match(/.rea (?:privativa|.til): (.*?) m²/);
     if (matchTamanho) {
         info.tamanho = matchTamanho[1] + 'm²';
     }
 
+    // Número de quartos
     const fichaComodos = $('.ficha_comodos', html).text();
     const matchDormitorios = fichaComodos.match(/(\d+) dormit.rio/);
     if (matchDormitorios) {
         info.quartos = matchDormitorios[1];
     }
 
+    // Preenche o campo observações com tudo o que estiver na área de detalhes
     info.observacoes = $('.ficha_detalhes', html).eq(0).text();
 
+    // Garagem, coberta ou descoberta
     const informacoesComplementares = $('.ficha_detalhes', html).eq(1).text();
     const matchGaragem = informacoesComplementares.match(/Garagen\(s\) (coberta|descoberta)\(s\): (.*)/);
     if (matchGaragem) {
         const textoGaragem = matchGaragem[1];
         info.garagem = `${textoGaragem.charAt(0).toUpperCase()}${textoGaragem.slice(1)} (${matchGaragem[2]})`;
     }
-
-    info.mobiliada = '???';
 
     return info;
 }
