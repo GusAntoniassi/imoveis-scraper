@@ -19,3 +19,8 @@ node sub100.js <nome do arquivo txt>
 ```
 node lib/capturarLinksMaringa.js
 ```
+
+## Calcular Distância do Imóvel
+Para que na planilha seja preenchido a distância do imóvel de determinado ponto de referência, é necessário ter um Token da API [Directions do Google Maps](https://developers.google.com/maps/documentation/directions/start?csw=1#get-a-key).
+
+Após ter o Token em mãos, crie um arquivo `.env` na raíz do projeto ao molde do arquivo `.env.dist` e configure as variáveis de acordo.
