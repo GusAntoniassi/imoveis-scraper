@@ -53,7 +53,7 @@ const liner = new readlines(filename);
             console.log(`Gravando resultado em CSV...`);
 
             await writeToCsv(info);
-            console.time("Tempo gasto");
+            console.timeEnd("Tempo gasto");
         } catch (e) {
             console.error('Falhou: ', e);
             return;
