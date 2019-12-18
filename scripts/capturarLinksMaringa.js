@@ -4,6 +4,25 @@ const fetch = require('node-fetch');
 const Iconv = require('iconv').Iconv;
 const iconvFromIsoToUf8 = new Iconv('iso-8859-1', 'utf8');
 const moment = require("moment");
+const argv = require("yargs");
+
+const args = argv.option('valorinicial', {
+    type: 'number',
+    description: 'Valor inicial dos apartamentos',
+    default: 650
+  })
+  .option('valorfinal', {
+    type: 'number',
+    description: 'Valor final dos apartamentos',
+    default: 1250
+  })
+  .option('tipo', {
+    choices: ['locacao', 'venda'],
+    description: 'Tipo de apartamento sendo filtrado',
+    default: "locacao"
+  })
+  .help()
+  .argv;
 
 (async function () {
     try {
@@ -50,9 +69,7 @@ async function getTotalPages() {
  * @param {int} pageNumber 
  */
 async function getHtmlAtPage(pageNumber) {
-    const url = `http://www.sub100.com.br/imoveis/locacao/apartamentos/10-maringa-pr/de-r$600-ate-r$1500/regiao-44/sub100list-resumo/pag-${pageNumber}/lista-10`;
-
-    return fetch(url, {
+    return fetch(buildUrl(pageNumber), {
         method: 'get',
         headers: {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
@@ -63,13 +80,21 @@ async function getHtmlAtPage(pageNumber) {
             'Cookie': 'getestado=PR; getcidade=10; _ga=GA1.3.628985793.1565357746; getnegocio=locacao; __utmz=168738595.1567602226.13.3.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); PHPSESSID=2lqpe7sc8em72q4vkdi9bulq7p; __utma=168738595.628985793.1565357746.1567602226.1574298130.14; __utmc=168738595; gettipo=APARTAMENTOS; getregiao=44; __atuvc=0%7C43%2C0%7C44%2C0%7C45%2C0%7C46%2C6%7C47; __atuvs=5dd5e52e18dcb883005; __utmt=1; __utmb=168738595.32.10.1574298130',
             'Host': 'www.sub100.com.br',
             'Pragma': 'no-cache',
-            'Referer': 'http://www.sub100.com.br/imoveis/locacao/apartamentos/10-maringa-pr/de-r$600-ate-r$1500/regiao-44/sub100list-resumo/pag-0/lista-10',
+            'Referer': buildUrl(0),
             'Upgrade-Insecure-Requests': '1',
             'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Mobile Safari/537.36'
         },
     })
     .then(res => res.arrayBuffer())
     .then(arrayBuffer => iconvFromIsoToUf8.convert(Buffer.from(arrayBuffer), 'utf-8').toString())
+}
+
+/**
+ * Monta a URL da Sub100
+ * @param {int} pageNumber 
+ */
+function buildUrl(pageNumber) {
+    return `http://www.sub100.com.br/imoveis/${args.tipo}/apartamentos/10-maringa-pr/de-r$${args.valorinicial}-ate-r$${args.valorfinal}/regiao-44/sub100list-resumo/pag-${pageNumber}/lista-10`;
 }
 
 /**
@@ -94,7 +119,7 @@ function scrapLinksFromPage(htmlListagemDeApartamentos) {
  */
 async function saveLinksIntoTxtFile(links) {
     const currentDateString = moment().format("YYYYMMDD_HHmm");
-    const filePath = `./linkImoveisScrapped_${currentDateString}.txt`;
+    const filePath = `./linkImoveisScrapped_sub100_${currentDateString}.txt`;
     
     const writeFile = (fileStream, link) => new Promise((resolve, reject) => {
         fileStream.write(`${link}\n`, err => {

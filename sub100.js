@@ -1,11 +1,13 @@
-const fs = require('fs');
 const readlines = require('n-readlines');
 const $ = require('cheerio');
+const path = require('path');
 const fetch = require('node-fetch');
 const Iconv = require('iconv').Iconv;
 const iconv = new Iconv('iso-8859-1', 'utf8');
 const { googleMapsToken, dadosCalcularDistancia } = require("./config");
-const apiGoogleMaps = require("./lib/apiGoogleMaps");
+const { error, warn, success, messageWithColor, Colors } = require("./lib/console-colorhelper");
+const apiGoogleMaps = require("./lib/api-google-maps");
+const CsvWriter = require("./lib/csv-writer");
 
 if (process.argv.length < 3) {
     console.log('Utilização: node ' + process.argv[1] + ' <lista-de-links.txt>');
@@ -13,14 +15,34 @@ if (process.argv.length < 3) {
 }
 
 if (dadosCalcularDistancia && !googleMapsToken) {
-    console.warn("Dados para calculo de distância foi informado, mas o Token para consulta à API da Google está vazio. A distância não será calculada!");
+    console.warn(warn("Dados para calculo de distância foi informado, mas o Token para consulta à API da Google está vazio. A distância não será calculada!"));
 }
 
+const serviceCsv = new CsvWriter({
+    fileName: path.join(__dirname, "imoveis_sub100.csv"),
+    columnDelimiter: "|",
+    lineDelimiter: "\n",
+    columns: [
+        {header: "Edifício", name: "edificio", default: ''},
+        {header: "Andar", name: "andar", default: ''},
+        {header: "Endereço", name: "endereco", default: ''},
+        {header: "Bairro", name: "bairro", default: ''},
+        {header: "Tamanho", name: "tamanho", default: ''},
+        {header: "Quartos", name: "quartos", default: ''},
+        {header: "Sacada", name: "sacada", default: ''},
+        {header: "Aluguel", name: "aluguel", default: ''},
+        {header: "Condomínio", name: "condominio", default: ''},
+        {header: "Total", name: "total", default: ''},
+        {header: "IPTU", name: "iptu", default: ''},
+        {header: "Mobiliada", name: "mobiliada", default: ''},  // Não é preenchido automaticamente, melhor descobrir pelas fotos
+        {header: "Garagem", name: "garagem", default: ''},
+        {header: "Distância do trabalho", name: "distanciaOrigem", default: ''},
+        {header: "Tempo Trajeto", name: "tempoTrajeto", default: ''},
+        {header: "Link", name: "link", default: ''}
+    ]
+});
+
 const filename = process.argv[2];
-
-const csvFile = fs.createWriteStream('./imoveis.csv');
-csvFile.write('Edifício|Andar|Endereço|Bairro|Tamanho|Quartos|Aluguel|Condomínio|Total|IPTU|Mobiliada|Garagem|Distância do trabalho|Tempo Trajeto|Link' + "\n");
-
 const liner = new readlines(filename);
 
 /**
@@ -28,19 +50,25 @@ const liner = new readlines(filename);
  * pra poder usar os awaits
  */
 (async function() {
-    console.time("Tempo total");
+    console.time(messageWithColor("Tempo total", Colors.BgGreen, Colors.FgBlack));
 
+    let lineNumber = 0;
     let line;
     while (line = liner.next()) {
         try {
-            console.time("Tempo gasto");
+            lineNumber++;
+
+            console.time(success("Tempo gasto"));
+
+            console.log(success(`Iniciando consulta (${lineNumber})`));
+
             const url = line.toString();
 
             if (!url) {
                 break;
             }
             
-            console.log(`Buscando informações do link [${url}]...`);
+            console.log(`Buscando informações do link [${url}]`);
             const html = await getHtml(url);
 
             console.log(`Extraindo informações da página...`);
@@ -52,16 +80,20 @@ const liner = new readlines(filename);
 
             console.log(`Gravando resultado em CSV...`);
 
-            await writeToCsv(info);
-            console.timeEnd("Tempo gasto");
+            await serviceCsv.write(info);
+
+            console.timeEnd(success("Tempo gasto"));
+            
+            console.log("\n" + "-".repeat(100) + "\n");
         } catch (e) {
-            console.error('Falhou: ', e);
+            console.error(error('Falhou: '), e);
             return;
         }
     }
 
-    csvFile.close();
-    console.timeEnd("Tempo total");
+    serviceCsv.close();
+    
+    console.timeEnd(messageWithColor("Tempo total", Colors.BgGreen, Colors.FgBlack));
 })();
 
 /**
@@ -91,25 +123,9 @@ async function getHtml(url) {
  * Extrai as informações do HTML utilizando o Cheerio
  */
 async function getInfo(html, url) {
-    const info = {
-        edificio: '',
-        andar: '',
-        endereco: '',
-        bairro: '',
-        cidade: '',
-        tamanho: '',
-        quartos: '',
-        aluguel: '',
-        condominio: '',
-        total: '',
-        iptu: '',
-        mobiliada: '', // Não é preenchido automaticamente, melhor descobrir pelas fotos
-        garagem: '',
-        distanciaOrigem: '',
-        tempoTrajeto: '',
-        link: url,
-        observacoes: ''
-    };
+    const info = {};
+
+    info.link = url;
 
     // Valor do aluguel
     info.aluguel = $('.ficha_dadosprincipais_titulo .texto_cinza16', html).text().replace('R$ ', '');
@@ -132,7 +148,7 @@ async function getInfo(html, url) {
     info.andar = $('.ficha_dadosprincipais_informacoes_menor', html).eq(1).find('span').text().trim();
     info.endereco = $('.ficha_dadosprincipais_informacoes_maior', html).eq(1).find('span').text().trim();
     info.bairro = $('.ficha_dadosprincipais_informacoes_medio', html).eq(0).find('span').text().trim();
-    info.cidade = $('.ficha_dadosprincipais_informacoes_medio', html).eq(1).find('span').text().trim();
+    // info.cidade = $('.ficha_dadosprincipais_informacoes_medio', html).eq(1).find('span').text().trim();
     
     // Tamanho da área privativa / útil
     const descricaoGeral = $('.ficha_dadosprincipais', html).text();
@@ -149,7 +165,7 @@ async function getInfo(html, url) {
     }
 
     // Preenche o campo observações com tudo o que estiver na área de detalhes
-    info.observacoes = $('.ficha_detalhes', html).eq(0).text();
+    // info.observacoes = $('.ficha_detalhes', html).eq(0).text();
 
     // Garagem, coberta ou descoberta
     const informacoesComplementares = $('.ficha_detalhes', html).eq(1).text();
@@ -159,10 +175,15 @@ async function getInfo(html, url) {
         info.garagem = `${textoGaragem.charAt(0).toUpperCase()}${textoGaragem.slice(1)} (${matchGaragem[2]})`;
     }
 
+    // Retorna que o apartamento possuí Sacada, caso a palavra exista na descrição do imóvel (abordagem ingênua, mas obtem resultados ok)
+    info.sacada = $('#estrutura_conteudo', html).text().indexOf("sacada") > -1 ? "Sim" : "Não";
+
     if (dadosCalcularDistancia && googleMapsToken && info.endereco) {
         const dadosTrajeto = await apiGoogleMaps.getDadosTrajetoMaisCurto(info);
-        info.distanciaOrigem = dadosTrajeto.distance.text;
-        info.tempoTrajeto = dadosTrajeto.duration.text; 
+        if (dadosTrajeto) {
+            info.distanciaOrigem = dadosTrajeto.distance.text;
+            info.tempoTrajeto = dadosTrajeto.duration.text;
+        }
     }
 
     const total = parseFloat(info.aluguel) + (parseFloat(info.condominio) || 0.0);
@@ -170,19 +191,4 @@ async function getInfo(html, url) {
     info.total = total || '';
 
     return info;
-}
-
-async function writeToCsv(info) {
-    return new Promise((resolve, reject) => {
-        csvFile.write(
-            `${info.edificio}|${info.andar}|${info.endereco}|${info.bairro}|${info.tamanho}|${info.quartos}|${info.aluguel}|${info.condominio}|${info.total}|${info.iptu}|${info.mobiliada}|${info.garagem}|${info.distanciaOrigem}|${info.tempoTrajeto}|${info.link}\n`, 
-            function (err) {
-                if (err) {
-                    reject(err);
-                }
-
-                resolve();
-            }
-        );
-    });
 }

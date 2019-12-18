@@ -1,5 +1,5 @@
 node_modules/
-imoveis.csv
+imoveis_*.csv
 links.txt
 linkImoveisScrapped_*.txt
 .env
