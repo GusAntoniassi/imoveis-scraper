@@ -1,0 +1,325 @@
+{
+    "geocoded_waypoints" : [
+       {
+          "geocoder_status" : "OK",
+          "place_id" : "EkxBdi4gQWR2b2dhZG8gSG9yw6FjaW8gUmFjY2FuZWxsbyBGaWxobywgNTEzNSAtIFpvbmEgNywgTWFyaW5nw6EgLSBQUiwgQnJhemlsIhsSGQoUChIJu_C2udbQ7JQRawVHDR4WOpQQjyg",
+          "types" : [ "street_address" ]
+       },
+       {
+          "geocoder_status" : "OK",
+          "place_id" : "ChIJnaH2Bc_W7JQRQpozyFL9U4Y",
+          "types" : [ "street_address" ]
+       }
+    ],
+    "routes" : [
+       {
+          "bounds" : {
+             "northeast" : {
+                "lat" : -23.4040611,
+                "lng" : -51.9315784
+             },
+             "southwest" : {
+                "lat" : -23.4184538,
+                "lng" : -51.949228
+             }
+          },
+          "copyrights" : "Dados cartográficos ©2019",
+          "legs" : [
+             {
+                "distance" : {
+                   "text" : "3,5 km",
+                   "value" : 3527
+                },
+                "duration" : {
+                   "text" : "9 minutos",
+                   "value" : 552
+                },
+                "end_address" : "Av. Mario Clapier Urbinati, 724 - Zona 7, Maringá - PR, 87020-260, Brasil",
+                "end_location" : {
+                   "lat" : -23.4060359,
+                   "lng" : -51.9454399
+                },
+                "start_address" : "Av. Advogado Horácio Raccanello Filho, 5135 - Zona 7, Maringá - PR, 87030-040, Brasil",
+                "start_location" : {
+                   "lat" : -23.4184538,
+                   "lng" : -51.9316006
+                },
+                "steps" : [
+                   {
+                      "distance" : {
+                         "text" : "0,2 km",
+                         "value" : 152
+                      },
+                      "duration" : {
+                         "text" : "1 min",
+                         "value" : 38
+                      },
+                      "end_location" : {
+                         "lat" : -23.4181779,
+                         "lng" : -51.93293360000001
+                      },
+                      "html_instructions" : "Siga na direção \u003cb\u003enorte\u003c/b\u003e na \u003cb\u003eAv. Advogado Horácio Raccanello Filho\u003c/b\u003e em direção à \u003cb\u003eAv. Advogado Horácio Raccanello Filho\u003c/b\u003e",
+                      "polyline" : {
+                         "points" : "h||mCn{}{HSCAJGp@ARAZS~C"
+                      },
+                      "start_location" : {
+                         "lat" : -23.4184538,
+                         "lng" : -51.9316006
+                      },
+                      "travel_mode" : "DRIVING"
+                   },
+                   {
+                      "distance" : {
+                         "text" : "0,2 km",
+                         "value" : 212
+                      },
+                      "duration" : {
+                         "text" : "1 min",
+                         "value" : 52
+                      },
+                      "end_location" : {
+                         "lat" : -23.416399,
+                         "lng" : -51.9330911
+                      },
+                      "html_instructions" : "Vire à \u003cb\u003edireita\u003c/b\u003e na \u003cb\u003eAv. São Paulo\u003c/b\u003e",
+                      "maneuver" : "turn-right",
+                      "polyline" : {
+                         "points" : "rz|mCxc~{H?L?L_B@g@?y@?M?KAmBBA?W?"
+                      },
+                      "start_location" : {
+                         "lat" : -23.4181779,
+                         "lng" : -51.93293360000001
+                      },
+                      "travel_mode" : "DRIVING"
+                   },
+                   {
+                      "distance" : {
+                         "text" : "0,3 km",
+                         "value" : 303
+                      },
+                      "duration" : {
+                         "text" : "1 min",
+                         "value" : 42
+                      },
+                      "end_location" : {
+                         "lat" : -23.4136726,
+                         "lng" : -51.9330444
+                      },
+                      "html_instructions" : "Mantenha-se à \u003cb\u003eesquerda\u003c/b\u003e para permanecer na \u003cb\u003eAv. São Paulo\u003c/b\u003e",
+                      "maneuver" : "keep-left",
+                      "polyline" : {
+                         "points" : "no|mCxd~{H{A?O?QAqAC]?s@AkA?mA?eBA"
+                      },
+                      "start_location" : {
+                         "lat" : -23.416399,
+                         "lng" : -51.9330911
+                      },
+                      "travel_mode" : "DRIVING"
+                   },
+                   {
+                      "distance" : {
+                         "text" : "0,1 km",
+                         "value" : 138
+                      },
+                      "duration" : {
+                         "text" : "1 min",
+                         "value" : 34
+                      },
+                      "end_location" : {
+                         "lat" : -23.4124307,
+                         "lng" : -51.9330323
+                      },
+                      "html_instructions" : "Continue em frente para permanecer na \u003cb\u003eAv. São Paulo\u003c/b\u003e",
+                      "maneuver" : "straight",
+                      "polyline" : {
+                         "points" : "l~{mCnd~{Ho@?a@A}B?S?S?"
+                      },
+                      "start_location" : {
+                         "lat" : -23.4136726,
+                         "lng" : -51.9330444
+                      },
+                      "travel_mode" : "DRIVING"
+                   },
+                   {
+                      "distance" : {
+                         "text" : "0,7 km",
+                         "value" : 715
+                      },
+                      "duration" : {
+                         "text" : "2 minutos",
+                         "value" : 112
+                      },
+                      "end_location" : {
+                         "lat" : -23.4109821,
+                         "lng" : -51.9395312
+                      },
+                      "html_instructions" : "Vire à \u003cb\u003eesquerda\u003c/b\u003e na \u003cb\u003eAv. Colombo\u003c/b\u003e",
+                      "maneuver" : "turn-left",
+                      "polyline" : {
+                         "points" : "tv{mCld~{Hg@B_@|AuAlFKd@Mj@]rAWdA_@|AMj@Or@Kn@Kv@IrA?TAh@?n@BdABl@@HJp@Pj@DP"
+                      },
+                      "start_location" : {
+                         "lat" : -23.4124307,
+                         "lng" : -51.9330323
+                      },
+                      "travel_mode" : "DRIVING"
+                   },
+                   {
+                      "distance" : {
+                         "text" : "0,2 km",
+                         "value" : 177
+                      },
+                      "duration" : {
+                         "text" : "1 min",
+                         "value" : 32
+                      },
+                      "end_location" : {
+                         "lat" : -23.4093961,
+                         "lng" : -51.9394667
+                      },
+                      "html_instructions" : "Vire à \u003cb\u003edireita\u003c/b\u003e na \u003cb\u003eR. Prof. Lauro Eduardo Werneck\u003c/b\u003e",
+                      "maneuver" : "turn-right",
+                      "polyline" : {
+                         "points" : "rm{mC`m_|Hg@?[?iCAmBI"
+                      },
+                      "start_location" : {
+                         "lat" : -23.4109821,
+                         "lng" : -51.9395312
+                      },
+                      "travel_mode" : "DRIVING"
+                   },
+                   {
+                      "distance" : {
+                         "text" : "0,2 km",
+                         "value" : 222
+                      },
+                      "duration" : {
+                         "text" : "1 min",
+                         "value" : 40
+                      },
+                      "end_location" : {
+                         "lat" : -23.4074598,
+                         "lng" : -51.93895029999999
+                      },
+                      "html_instructions" : "Mantenha-se à \u003cb\u003edireita\u003c/b\u003e para permanecer em \u003cb\u003eR. Prof. Lauro Eduardo Werneck\u003c/b\u003e",
+                      "maneuver" : "keep-right",
+                      "polyline" : {
+                         "points" : "vc{mCtl_|Hg@CmDe@]GE?iCu@"
+                      },
+                      "start_location" : {
+                         "lat" : -23.4093961,
+                         "lng" : -51.9394667
+                      },
+                      "travel_mode" : "DRIVING"
+                   },
+                   {
+                      "distance" : {
+                         "text" : "0,5 km",
+                         "value" : 472
+                      },
+                      "duration" : {
+                         "text" : "1 min",
+                         "value" : 57
+                      },
+                      "end_location" : {
+                         "lat" : -23.4059929,
+                         "lng" : -51.943292
+                      },
+                      "html_instructions" : "Vire à \u003cb\u003eesquerda\u003c/b\u003e na \u003cb\u003eR. Prof. Itamar Orlando Soares\u003c/b\u003e",
+                      "maneuver" : "turn-left",
+                      "polyline" : {
+                         "points" : "rwzmCli_|HGT}@vDQr@mAhFiA|EERo@dC"
+                      },
+                      "start_location" : {
+                         "lat" : -23.4074598,
+                         "lng" : -51.93895029999999
+                      },
+                      "travel_mode" : "DRIVING"
+                   },
+                   {
+                      "distance" : {
+                         "text" : "0,6 km",
+                         "value" : 645
+                      },
+                      "duration" : {
+                         "text" : "1 min",
+                         "value" : 65
+                      },
+                      "end_location" : {
+                         "lat" : -23.4040725,
+                         "lng" : -51.94920579999999
+                      },
+                      "html_instructions" : "Curva suave à \u003cb\u003edireita\u003c/b\u003e para permanecer na \u003cb\u003eR. Prof. Itamar Orlando Soares\u003c/b\u003e",
+                      "maneuver" : "turn-slight-right",
+                      "polyline" : {
+                         "points" : "lnzmCpd`|HSVO\\Qh@CHCD]rASv@Kb@o@rCcBdHi@|BSt@Of@SlAGd@EP?JAF?D?L?H?H?H@\\"
+                      },
+                      "start_location" : {
+                         "lat" : -23.4059929,
+                         "lng" : -51.943292
+                      },
+                      "travel_mode" : "DRIVING"
+                   },
+                   {
+                      "distance" : {
+                         "text" : "81 m",
+                         "value" : 81
+                      },
+                      "duration" : {
+                         "text" : "1 min",
+                         "value" : 16
+                      },
+                      "end_location" : {
+                         "lat" : -23.4048006,
+                         "lng" : -51.949228
+                      },
+                      "html_instructions" : "Vire à \u003cb\u003eesquerda\u003c/b\u003e na \u003cb\u003eR. Carteiro José Roberto Nasato\u003c/b\u003e",
+                      "maneuver" : "turn-left",
+                      "polyline" : {
+                         "points" : "lbzmCpia|HpCB"
+                      },
+                      "start_location" : {
+                         "lat" : -23.4040725,
+                         "lng" : -51.94920579999999
+                      },
+                      "travel_mode" : "DRIVING"
+                   },
+                   {
+                      "distance" : {
+                         "text" : "0,4 km",
+                         "value" : 410
+                      },
+                      "duration" : {
+                         "text" : "1 min",
+                         "value" : 64
+                      },
+                      "end_location" : {
+                         "lat" : -23.4060359,
+                         "lng" : -51.9454399
+                      },
+                      "html_instructions" : "Vire à \u003cb\u003eesquerda\u003c/b\u003e na \u003cb\u003eAv. Mario Clapier Urbinati\u003c/b\u003e\u003cdiv style=\"font-size:0.9em\"\u003eO destino estará à esquerda\u003c/div\u003e",
+                      "maneuver" : "turn-left",
+                      "polyline" : {
+                         "points" : "~fzmCtia|HViABIVgAJe@d@wBJc@DMP{@Je@ViAn@qCBMT}@"
+                      },
+                      "start_location" : {
+                         "lat" : -23.4048006,
+                         "lng" : -51.949228
+                      },
+                      "travel_mode" : "DRIVING"
+                   }
+                ],
+                "traffic_speed_entry" : [],
+                "via_waypoint" : []
+             }
+          ],
+          "overview_polyline" : {
+             "points" : "h||mCn{}{HSCAJIdAUzD?ZoE@sC@oEEkFAwDCqC?{@BoC|Ku@xCm@hC[bBUjCA~@BtBDv@\\|ADPg@?eDAuCMkEm@oCu@eAlEoDnOo@dCSVa@fAy@zCiEzQc@|A[rBGj@?j@@\\pCBZsAtAiGz@yDhA}E"
+          },
+          "summary" : "R. Prof. Itamar Orlando Soares",
+          "warnings" : [],
+          "waypoint_order" : []
+       }
+    ],
+    "status" : "OK"
+ }
